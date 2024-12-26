@@ -1,0 +1,67 @@
+<mjml>
+  <mj-head>
+    <mj-title>Email Verification Successful</mj-title>
+    <mj-preview>Thank you for verifying your email!</mj-preview>
+    <mj-style>
+      .header-title { font-family: Arial, sans-serif; font-size: 28px;
+      font-weight: bold; color: #2c3e50; } .body-text { font-family: Arial,
+      sans-serif; font-size: 16px; color: #34495e; line-height: 1.5; }
+      .cta-button { background-color: #1abc9c; color: white; font-family: Arial,
+      sans-serif; font-size: 16px; font-weight: bold; text-transform: uppercase;
+      border-radius: 5px; padding: 15px 30px; } .footer-text { font-family:
+      Arial, sans-serif; font-size: 12px; color: #95a5a6; line-height: 1.5; }
+    </mj-style>
+  </mj-head>
+  <mj-body background-color="#ecf0f1">
+    <!-- Header Section -->
+    <mj-section background-color="#ffffff" padding="20px">
+      <mj-column>
+        <mj-image
+          width="150px"
+          src="https://res.cloudinary.com/dv2rpts6d/image/upload/v1735099359/chatbot/logi-logo_rng2u3.jpg"
+          alt="Company Logo"
+        />
+        <mj-text css-class="header-title" align="center">
+          Email Verified Successfully!
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
+    <!-- Body Section -->
+    <mj-section background-color="#ffffff" padding="20px">
+      <mj-column>
+        <mj-text css-class="body-text">
+          Hi {{name}},
+          <br /><br />
+          Your email has been successfully verified. You can now access all the
+          features of your account.
+          <br /><br />
+          To get started, visit your dashboard and explore our services!
+        </mj-text>
+        <mj-button
+          href="{{loginUrl}}"
+          background-color="#4CAF50"
+          color="white"
+          font-family="Helvetica, Arial, sans-serif"
+          font-size="16px"
+          padding="15px 30px"
+          border-radius="5px"
+        >
+          Login
+        </mj-button>
+      </mj-column>
+    </mj-section>
+
+    <!-- Footer Section -->
+    <mj-section background-color="#ecf0f1" padding="10px">
+      <mj-column>
+        <mj-text css-class="footer-text" align="center">
+          © {{year}} Fleetly . All rights reserved.
+          <br />
+          <a href="https://example.com/privacy">Privacy Policy</a> |
+          <a href="https://example.com/terms">Terms of Service</a>
+        </mj-text>
+      </mj-column>
+    </mj-section>
+  </mj-body>
+</mjml>

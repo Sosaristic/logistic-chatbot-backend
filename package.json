@@ -1,0 +1,50 @@
+{
+  "name": "chatbot-backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon src/index.ts",
+    "build": "tsc -p tsconfig.json",
+    "start": "node dist/index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "bcrypt": "^5.1.1",
+    "compression": "^1.7.5",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.1",
+    "express-async-handler": "^1.2.0",
+    "express-rate-limit": "^7.4.1",
+    "handlebars": "^4.7.8",
+    "helmet": "^8.0.0",
+    "jsonwebtoken": "^9.0.2",
+    "mjml": "^4.15.3",
+    "mongoose": "^8.8.2",
+    "morgan": "^1.10.0",
+    "nodemailer": "^6.9.16",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.15.0",
+    "@types/bcrypt": "^5.0.2",
+    "@types/cors": "^2.8.17",
+    "@types/express": "^5.0.0",
+    "@types/handlebars": "^4.1.0",
+    "@types/mjml": "^4.7.4",
+    "@types/mongoose": "^5.11.97",
+    "@types/node": "^22.9.3",
+    "@types/nodemailer": "^6.4.17",
+    "eslint": "^9.15.0",
+    "globals": "^15.12.0",
+    "nodemon": "^3.1.7",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.7.2",
+    "typescript-eslint": "^8.15.0"
+  }
+}
