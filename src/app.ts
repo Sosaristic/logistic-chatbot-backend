@@ -5,7 +5,7 @@ import dotenv from 'dotenv';
 import cookieParser from 'cookie-parser';
 import morgan from 'morgan';
 import compression from 'compression';
-import { authRoutes } from './routes';
+import { authRoutes, orderRoutes } from './routes';
 import sendEmail from './services/send_email';
 import errorController from './controllers/error.controller';
 import CustomError from './lib/utils/error';
@@ -44,6 +44,7 @@ app.get('/', (req, res) => {
 });
 
 app.use('/api/v1/auth', authRoutes);
+app.use('/api/v1/order', orderRoutes);
 app.get('/protected', authMiddleWare, (req, res) => {
   res.status(200).json({ message: "You're logged in!" });
 });

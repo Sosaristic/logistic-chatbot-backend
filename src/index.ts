@@ -15,7 +15,6 @@ const main = async () => {
       console.log('Database connected');
       server;
     } else {
-      console.log('Database not connected');
       server.close(() => {
         process.exit(1);
       });

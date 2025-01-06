@@ -50,13 +50,15 @@ export const authMiddleWare = asyncHandler(
           maxAge: 5 * 60 * 1000,
           secure: true,
           sameSite: 'none',
+          partitioned: true,
         });
 
         res.cookie('refreshToken', newRefreshToken, {
           httpOnly: true,
-          maxAge: 7 * 24 * 60 * 60 * 1000,
+          maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
           secure: true,
           sameSite: 'none',
+          partitioned: true,
         });
 
         const hashedToken = await hashPassword(refreshToken);

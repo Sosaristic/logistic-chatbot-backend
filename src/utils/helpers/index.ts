@@ -46,3 +46,12 @@ export const generateRandomString = (length: number) => {
 export const hashAPIKey = (apiKey: string): string => {
   return crypto.createHash('sha256').update(apiKey).digest('hex');
 };
+
+export const generateTrackingId = (length = 12) => {
+  const digits = '0123456789';
+  let trackingId = '';
+  for (let i = 0; i < length; i++) {
+    trackingId += digits.charAt(Math.floor(Math.random() * digits.length));
+  }
+  return trackingId;
+};
