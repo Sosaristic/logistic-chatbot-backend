@@ -76,7 +76,7 @@ const productSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  rate: {
+  rating: {
     count: {
       type: Number,
       required: true,
