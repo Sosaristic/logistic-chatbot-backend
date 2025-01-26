@@ -13,6 +13,7 @@ export class ErrorValidators {
 
   zodValidator() {
     const { errors } = this.error;
+
     const message = errors.map((error) => error.message).join(',');
     return this.res
       .status(400)

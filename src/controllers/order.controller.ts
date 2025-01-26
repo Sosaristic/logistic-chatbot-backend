@@ -38,6 +38,7 @@ export const placeOrder = asyncHandler(async (req: Request, res: Response) => {
   });
 
   await order.save();
+
   sendEmail({
     templateName: 'new-order',
     email: data.contact.email,
