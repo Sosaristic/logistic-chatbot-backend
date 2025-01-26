@@ -21,8 +21,8 @@ const corsOptions: CorsOptions = {
     'http://localhost:3000',
     'http://localhost:5000',
     'http://localhost:5173',
-    'https://cozycart.netlify.app/',
-    'https://dashboard-chatbot-tau.vercel.app/',
+    'https://cozycart.netlify.app',
+    'https://dashboard-chatbot-tau.vercel.app',
     process.env.CLIENT_URL,
   ],
 };
