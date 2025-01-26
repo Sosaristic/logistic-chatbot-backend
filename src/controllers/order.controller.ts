@@ -6,6 +6,7 @@ import { VendorModel } from '../models/vendors.models';
 import { generateTrackingId, hashAPIKey } from '../utils/helpers';
 import { sendResponse } from '../utils/sendResponse';
 import { Order } from '../models/order.model';
+import sendEmail from '../services/send_email';
 
 export const placeOrder = asyncHandler(async (req: Request, res: Response) => {
   const data = createOrderBodySchema.parse(req.body);
@@ -37,6 +38,17 @@ export const placeOrder = asyncHandler(async (req: Request, res: Response) => {
   });
 
   await order.save();
+  sendEmail({
+    templateName: 'new-order',
+    email: vendor.email,
+    subject: 'New Order',
+    variables: {
+      name: vendor.vendor_name,
+      trackingId: order.trackingId,
+      orderDate: order.date,
+      totalAmount: order.totalAmount,
+    },
+  });
 
   sendResponse(
     res,
