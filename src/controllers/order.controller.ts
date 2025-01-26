@@ -40,10 +40,10 @@ export const placeOrder = asyncHandler(async (req: Request, res: Response) => {
   await order.save();
   sendEmail({
     templateName: 'new-order',
-    email: vendor.email,
+    email: data.contact.email,
     subject: 'New Order',
     variables: {
-      name: vendor.vendor_name,
+      name: data.contact.firstName,
       trackingId: order.trackingId,
       orderDate: order.date,
       totalAmount: order.totalAmount,
