@@ -8,8 +8,6 @@ import { sendResponse } from '../utils/sendResponse';
 import { Order } from '../models/order.model';
 
 export const placeOrder = asyncHandler(async (req: Request, res: Response) => {
-  console.log(req);
-
   const data = createOrderBodySchema.parse(req.body);
 
   if (!req.headers.authorization) {
