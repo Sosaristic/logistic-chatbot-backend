@@ -55,3 +55,10 @@ export const generateTrackingId = (length = 12) => {
   }
   return trackingId;
 };
+
+export const formatCurrency = (amount: number) => {
+  return amount.toLocaleString('en-US', {
+    style: 'currency',
+    currency: 'NGN',
+  });
+};

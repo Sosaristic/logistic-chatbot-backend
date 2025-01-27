@@ -38,11 +38,11 @@ export const authMiddleWare = asyncHandler(
         }
 
         const newAccessToken = createJWT(
-          { userId: user._id.toString(), role: 'vendor' },
+          { userId: user._id.toString(), role: user.type },
           { expiresIn: '2m' }
         );
         const newRefreshToken = createJWT(
-          { userId: user._id.toString(), role: 'vendor' },
+          { userId: user._id.toString(), role: user.type },
           { expiresIn: '7d' }
         );
         res.cookie('accessToken', newAccessToken, {

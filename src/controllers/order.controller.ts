@@ -3,7 +3,11 @@ import asyncHandler from 'express-async-handler';
 import { createOrderBodySchema } from '../validators/order.validator';
 import CustomError from '../lib/utils/error';
 import { VendorModel } from '../models/vendors.models';
-import { generateTrackingId, hashAPIKey } from '../utils/helpers';
+import {
+  formatCurrency,
+  generateTrackingId,
+  hashAPIKey,
+} from '../utils/helpers';
 import { sendResponse } from '../utils/sendResponse';
 import { Order } from '../models/order.model';
 import sendEmail from '../services/send_email';
@@ -47,7 +51,8 @@ export const placeOrder = asyncHandler(async (req: Request, res: Response) => {
       name: data.contact.firstName,
       trackingId: order.trackingId,
       orderDate: order.date,
-      totalAmount: order.totalAmount,
+      totalAmount: formatCurrency(order.totalAmount),
+      url: `${process.env.CLIENT_URL}`,
     },
   });
 

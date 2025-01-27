@@ -35,14 +35,14 @@
           <br /><br />
           Thank you for your order! Your order number is
           <strong>{{trackingId}}</strong>. <br /><br />
-          The total amount for your order is <strong>${{totalAmount}}</strong>.
+          The total amount for your order is <strong>{{totalAmount}}</strong>.
           <br /><br />
           We are currently processing your order and will notify you once it has
           been shipped. You can view your order details and track its status by
           clicking the button below.
         </mj-text>
         <mj-button
-          href="{{orderDetailsUrl}}"
+          href="{{url}}"
           background-color="#4CAF50"
           color="white"
           font-family="Helvetica, Arial, sans-serif"

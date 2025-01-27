@@ -7,7 +7,7 @@ import {
   verifyEmailBodySchema,
 } from '../validators/auth.validators';
 import asyncHandler from 'express-async-handler';
-import { VendorModel } from '../models/vendors.models';
+import { VendorModel, VendorType } from '../models/vendors.models';
 import CustomError from '../lib/utils/error';
 import {
   comparePassword,
@@ -77,7 +77,9 @@ export const login = asyncHandler(async (req: Request, res: Response) => {
 export const register = asyncHandler(async (req: Request, res: Response) => {
   const data = signUpBodySchema.parse(req.body);
 
-  const { email, password, vendor_name } = data;
+  const { email, password, type } = data;
+  console.log(data, 'data');
+
   const existingUser = await VendorModel.findOne({ email });
 
   if (existingUser) {
@@ -86,14 +88,31 @@ export const register = asyncHandler(async (req: Request, res: Response) => {
 
   const hashedPass = await hashPassword(password);
 
-  const user = await VendorModel.create({
-    email,
-    password: hashedPass,
-    vendor_name,
-  });
+  let user: VendorType = {} as VendorType;
+
+  if (type === 'vendor') {
+    const { vendor_name } = data;
+    user = await VendorModel.create({
+      email,
+      password: hashedPass,
+      type,
+      vendor_name,
+    });
+  }
+
+  if (type === 'driver') {
+    const { first_name, last_name } = data;
+    user = await VendorModel.create({
+      email,
+      type,
+      password: hashedPass,
+      first_name,
+      last_name,
+    });
+  }
 
   const token = createJWT(
-    { userId: user._id.toString(), role: 'vendor' },
+    { userId: user._id.toString(), role: type },
     { expiresIn: '15m' }
   );
 
@@ -104,7 +123,10 @@ export const register = asyncHandler(async (req: Request, res: Response) => {
     email,
     subject: 'Verify Your Email Address',
     variables: {
-      name: vendor_name,
+      name:
+        type === 'vendor'
+          ? user.vendor_name
+          : `${user.first_name} ${user.last_name}`,
 
       verificationLink,
     },
