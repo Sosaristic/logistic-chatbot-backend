@@ -47,12 +47,12 @@ var vendors_models_1 = require("../models/vendors.models");
 var helpers_1 = require("../utils/helpers");
 var sendResponse_1 = require("../utils/sendResponse");
 var order_model_1 = require("../models/order.model");
+var send_email_1 = __importDefault(require("../services/send_email"));
 exports.placeOrder = (0, express_async_handler_1.default)(function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var data, apiKey, vendor, order;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                console.log(req);
                 data = order_validator_1.createOrderBodySchema.parse(req.body);
                 if (!req.headers.authorization) {
                     throw new error_1.default('Unauthorized', 401);
@@ -81,6 +81,18 @@ exports.placeOrder = (0, express_async_handler_1.default)(function (req, res) { 
                 return [4 /*yield*/, order.save()];
             case 3:
                 _a.sent();
+                (0, send_email_1.default)({
+                    templateName: 'new-order',
+                    email: data.contact.email,
+                    subject: 'New Order',
+                    variables: {
+                        name: data.contact.firstName,
+                        trackingId: order.trackingId,
+                        orderDate: order.date,
+                        totalAmount: (0, helpers_1.formatCurrency)(order.totalAmount),
+                        url: "".concat(process.env.CLIENT_URL),
+                    },
+                });
                 (0, sendResponse_1.sendResponse)(res, 200, { tracking_id: order.trackingId }, 'Order placed successfully', null);
                 return [2 /*return*/];
         }

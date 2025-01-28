@@ -14,6 +14,7 @@ var error_controller_1 = __importDefault(require("./controllers/error.controller
 var error_1 = __importDefault(require("./lib/utils/error"));
 var auth_middleware_1 = require("./middlewares/auth.middleware");
 dotenv_1.default.config();
+console.log('OPENAI_API_KEY:', process.env.OPENAI_API_KEY);
 var app = (0, express_1.default)();
 var corsOptions = {
     credentials: true,
@@ -21,6 +22,8 @@ var corsOptions = {
         'http://localhost:3000',
         'http://localhost:5000',
         'http://localhost:5173',
+        'https://cozycart.netlify.app',
+        'https://dashboard-chatbot-tau.vercel.app',
         process.env.CLIENT_URL,
     ],
 };
@@ -38,6 +41,7 @@ app.get('/', function (req, res) {
 });
 app.use('/api/v1/auth', routes_1.authRoutes);
 app.use('/api/v1/order', routes_1.orderRoutes);
+app.use('/api/v1/chat', routes_1.chatRoutes);
 app.get('/protected', auth_middleware_1.authMiddleWare, function (req, res) {
     res.status(200).json({ message: "You're logged in!" });
 });

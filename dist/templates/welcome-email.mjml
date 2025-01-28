@@ -1,0 +1,18 @@
+<!-- src/templates/welcome-email.mjml -->
+<mjml>
+  <mj-body>
+    <mj-section>
+      <mj-column>
+        <mj-image src="http://placehold.it/100x100"></mj-image>
+        <mj-divider border-color="#F45E43"></mj-divider>
+        <mj-text font-size="20px" color="#F45E43" font-family="Helvetica">
+          Welcome, {{name}}!
+        </mj-text>
+        <mj-text>
+          Thanks for joining us! Here are some details about your account:
+        </mj-text>
+        <mj-text> Email: {{email}} Start Date: {{startDate}} </mj-text>
+      </mj-column>
+    </mj-section>
+  </mj-body>
+</mjml>

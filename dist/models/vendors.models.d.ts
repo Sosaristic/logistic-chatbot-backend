@@ -2,6 +2,9 @@ import mongoose, { Document } from 'mongoose';
 export interface VendorType extends Document {
     email: string;
     vendor_name: string;
+    first_name: string;
+    type: string;
+    last_name: string;
     password: string;
     api_key: string;
     email_verified: boolean;

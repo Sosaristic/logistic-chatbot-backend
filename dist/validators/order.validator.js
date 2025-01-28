@@ -36,7 +36,7 @@ exports.createOrderBodySchema = zod_1.z.object({
         image: zod_1.z
             .string({ required_error: 'Image is required' })
             .min(10, { message: 'Must be 10 characters long' }),
-        rate: zod_1.z.object({
+        rating: zod_1.z.object({
             count: zod_1.z.number({ required_error: 'Count is required' }),
             rate: zod_1.z.number({ required_error: 'Rate is required' }),
         }),

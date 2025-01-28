@@ -8,7 +8,17 @@ var mongoose_1 = __importDefault(require("mongoose"));
 var vendorSchema = new mongoose_1.default.Schema({
     vendor_name: {
         type: String,
+    },
+    first_name: {
+        type: String,
+    },
+    type: {
+        type: String,
         required: true,
+        enum: ['vendor', 'driver'],
+    },
+    last_name: {
+        type: String,
     },
     email: {
         type: String,

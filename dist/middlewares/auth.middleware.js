@@ -77,8 +77,8 @@ exports.authMiddleWare = (0, express_async_handler_1.default)(function (req, res
                 if (!(0, helpers_1.comparePassword)(refreshToken, user.refresh_token)) {
                     throw new error_1.default('unauthorized', 401);
                 }
-                newAccessToken = (0, helpers_1.createJWT)({ userId: user._id.toString(), role: 'vendor' }, { expiresIn: '2m' });
-                newRefreshToken = (0, helpers_1.createJWT)({ userId: user._id.toString(), role: 'vendor' }, { expiresIn: '7d' });
+                newAccessToken = (0, helpers_1.createJWT)({ userId: user._id.toString(), role: user.type }, { expiresIn: '2m' });
+                newRefreshToken = (0, helpers_1.createJWT)({ userId: user._id.toString(), role: user.type }, { expiresIn: '7d' });
                 res.cookie('accessToken', newAccessToken, {
                     httpOnly: true,
                     maxAge: 5 * 60 * 1000,

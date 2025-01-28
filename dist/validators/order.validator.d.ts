@@ -25,15 +25,15 @@ export declare const createOrderBodySchema: z.ZodObject<{
         price: z.ZodNumber;
         quantity: z.ZodNumber;
         image: z.ZodString;
-        rate: z.ZodObject<{
+        rating: z.ZodObject<{
             count: z.ZodNumber;
             rate: z.ZodNumber;
         }, "strip", z.ZodTypeAny, {
-            rate?: number;
             count?: number;
+            rate?: number;
         }, {
-            rate?: number;
             count?: number;
+            rate?: number;
         }>;
     }, "strip", z.ZodTypeAny, {
         description?: string;
@@ -41,9 +41,9 @@ export declare const createOrderBodySchema: z.ZodObject<{
         price?: number;
         quantity?: number;
         image?: string;
-        rate?: {
-            rate?: number;
+        rating?: {
             count?: number;
+            rate?: number;
         };
     }, {
         description?: string;
@@ -51,9 +51,9 @@ export declare const createOrderBodySchema: z.ZodObject<{
         price?: number;
         quantity?: number;
         image?: string;
-        rate?: {
-            rate?: number;
+        rating?: {
             count?: number;
+            rate?: number;
         };
     }>, "many">;
     totalAmount: z.ZodNumber;
@@ -73,9 +73,9 @@ export declare const createOrderBodySchema: z.ZodObject<{
         price?: number;
         quantity?: number;
         image?: string;
-        rate?: {
-            rate?: number;
+        rating?: {
             count?: number;
+            rate?: number;
         };
     }[];
     totalAmount?: number;
@@ -94,9 +94,9 @@ export declare const createOrderBodySchema: z.ZodObject<{
         price?: number;
         quantity?: number;
         image?: string;
-        rate?: {
-            rate?: number;
+        rating?: {
             count?: number;
+            rate?: number;
         };
     }[];
     totalAmount?: number;

@@ -116,7 +116,7 @@ export const register = asyncHandler(async (req: Request, res: Response) => {
     { expiresIn: '15m' }
   );
 
-  const verificationLink = `${process.env.CLIENT_URL}/verify-email?token=${token}`;
+  const verificationLink = `${process.env.CLIENT_URL}/auth/verify_email?token=${token}`;
 
   sendEmail({
     templateName: 'verify-email',

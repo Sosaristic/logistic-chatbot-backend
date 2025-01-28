@@ -39,7 +39,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.generateTrackingId = exports.hashAPIKey = exports.generateRandomString = exports.verifyJWT = exports.createJWT = exports.comparePassword = exports.hashPassword = void 0;
+exports.formatCurrency = exports.generateTrackingId = exports.hashAPIKey = exports.generateRandomString = exports.verifyJWT = exports.createJWT = exports.comparePassword = exports.hashPassword = void 0;
 var bcrypt_1 = __importDefault(require("bcrypt"));
 var jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 var error_1 = __importDefault(require("../../lib/utils/error"));
@@ -97,4 +97,11 @@ var generateTrackingId = function (length) {
     return trackingId;
 };
 exports.generateTrackingId = generateTrackingId;
+var formatCurrency = function (amount) {
+    return amount.toLocaleString('en-US', {
+        style: 'currency',
+        currency: 'NGN',
+    });
+};
+exports.formatCurrency = formatCurrency;
 //# sourceMappingURL=index.js.map

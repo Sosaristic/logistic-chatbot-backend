@@ -100,12 +100,13 @@ exports.login = (0, express_async_handler_1.default)(function (req, res) { retur
     });
 }); });
 exports.register = (0, express_async_handler_1.default)(function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var data, email, password, vendor_name, existingUser, hashedPass, user, token, verificationLink;
+    var data, email, password, type, existingUser, hashedPass, user, vendor_name, first_name, last_name, token, verificationLink;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
                 data = auth_validators_1.signUpBodySchema.parse(req.body);
-                email = data.email, password = data.password, vendor_name = data.vendor_name;
+                email = data.email, password = data.password, type = data.type;
+                console.log(data, 'data');
                 return [4 /*yield*/, vendors_models_1.VendorModel.findOne({ email: email })];
             case 1:
                 existingUser = _a.sent();
@@ -115,21 +116,42 @@ exports.register = (0, express_async_handler_1.default)(function (req, res) { re
                 return [4 /*yield*/, (0, helpers_1.hashPassword)(password)];
             case 2:
                 hashedPass = _a.sent();
+                user = {};
+                if (!(type === 'vendor')) return [3 /*break*/, 4];
+                vendor_name = data.vendor_name;
                 return [4 /*yield*/, vendors_models_1.VendorModel.create({
                         email: email,
                         password: hashedPass,
+                        type: type,
                         vendor_name: vendor_name,
                     })];
             case 3:
                 user = _a.sent();
-                token = (0, helpers_1.createJWT)({ userId: user._id.toString(), role: 'vendor' }, { expiresIn: '15m' });
+                _a.label = 4;
+            case 4:
+                if (!(type === 'driver')) return [3 /*break*/, 6];
+                first_name = data.first_name, last_name = data.last_name;
+                return [4 /*yield*/, vendors_models_1.VendorModel.create({
+                        email: email,
+                        type: type,
+                        password: hashedPass,
+                        first_name: first_name,
+                        last_name: last_name,
+                    })];
+            case 5:
+                user = _a.sent();
+                _a.label = 6;
+            case 6:
+                token = (0, helpers_1.createJWT)({ userId: user._id.toString(), role: type }, { expiresIn: '15m' });
                 verificationLink = "".concat(process.env.CLIENT_URL, "/verify-email?token=").concat(token);
                 (0, send_email_1.default)({
                     templateName: 'verify-email',
                     email: email,
                     subject: 'Verify Your Email Address',
                     variables: {
-                        name: vendor_name,
+                        name: type === 'vendor'
+                            ? user.vendor_name
+                            : "".concat(user.first_name, " ").concat(user.last_name),
                         verificationLink: verificationLink,
                     },
                 });

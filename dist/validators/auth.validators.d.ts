@@ -9,18 +9,41 @@ export declare const loginBodySchema: z.ZodObject<{
     email?: string;
     password?: string;
 }>;
-export declare const signUpBodySchema: z.ZodObject<{
+export declare const signUpBodySchema: z.ZodEffects<z.ZodObject<{
     email: z.ZodString;
     password: z.ZodString;
-    vendor_name: z.ZodString;
+    type: z.ZodEnum<["vendor", "driver"]>;
+    vendor_name: z.ZodOptional<z.ZodString>;
+    first_name: z.ZodOptional<z.ZodString>;
+    last_name: z.ZodOptional<z.ZodString>;
 }, "strip", z.ZodTypeAny, {
     email?: string;
     password?: string;
+    type?: "vendor" | "driver";
     vendor_name?: string;
+    first_name?: string;
+    last_name?: string;
 }, {
     email?: string;
     password?: string;
+    type?: "vendor" | "driver";
     vendor_name?: string;
+    first_name?: string;
+    last_name?: string;
+}>, {
+    email?: string;
+    password?: string;
+    type?: "vendor" | "driver";
+    vendor_name?: string;
+    first_name?: string;
+    last_name?: string;
+}, {
+    email?: string;
+    password?: string;
+    type?: "vendor" | "driver";
+    vendor_name?: string;
+    first_name?: string;
+    last_name?: string;
 }>;
 export declare const verifyEmailBodySchema: z.ZodObject<{
     token: z.ZodString;

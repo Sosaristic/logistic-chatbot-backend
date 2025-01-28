@@ -12,4 +12,5 @@ export declare const verifyJWT: (token: string) => JWTUSER;
 export declare const generateRandomString: (length: number) => string;
 export declare const hashAPIKey: (apiKey: string) => string;
 export declare const generateTrackingId: (length?: number) => string;
+export declare const formatCurrency: (amount: number) => string;
 export {};
