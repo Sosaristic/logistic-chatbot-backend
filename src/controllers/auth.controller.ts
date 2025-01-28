@@ -34,6 +34,24 @@ export const login = asyncHandler(async (req: Request, res: Response) => {
   }
 
   if (!user.email_verified) {
+    const token = createJWT(
+      { userId: user._id.toString(), role: user.type },
+      { expiresIn: '15m' }
+    );
+    const verificationLink = `${process.env.CLIENT_URL}/auth/verify_email?token=${token}`;
+    sendEmail({
+      templateName: 'verify-email',
+      email,
+      subject: 'Verify Your Email Address',
+      variables: {
+        name:
+          user.type === 'vendor'
+            ? user.vendor_name
+            : `${user.first_name} ${user.last_name}`,
+
+        verificationLink,
+      },
+    });
     throw new CustomError('email not verified', 401);
   }
 
