@@ -7,9 +7,6 @@ import OpenAI from 'openai';
 import { v4 as uuidv4 } from 'uuid';
 
 // Initialize OpenAI client
-const openai = new OpenAI({
-  apiKey: '',
-});
 
 // Session state to keep track of users' conversation context
 interface SessionState {
@@ -48,6 +45,10 @@ Respond with JSON in this format:
 
 export const handleChats = asyncHandler(async (req: Request, res: Response) => {
   const { message } = createChatBodySchema.parse(req.body); // Validate incoming message
+
+  const openai = new OpenAI({
+    apiKey: process.env.OPENAI_API_KEY,
+  });
 
   const completion = openai.chat.completions.create({
     model: 'gpt-4o-mini',
