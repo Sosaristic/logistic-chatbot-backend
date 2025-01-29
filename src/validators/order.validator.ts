@@ -44,3 +44,7 @@ export const createOrderBodySchema = z.object({
   totalAmount: z.number({ required_error: 'Total Amount is required' }),
   date: z.string({ required_error: 'Date is required' }),
 });
+
+export const trackOrderBodySchema = z.object({
+  tracking_id: z.string({ required_error: 'Tracking ID is required' }),
+});

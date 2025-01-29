@@ -79,8 +79,6 @@ export const login = asyncHandler(async (req: Request, res: Response) => {
     partitioned: true,
   });
   const userData = {
-    userId: user._id.toString(),
-    email: user.email,
     vendor_name: user.vendor_name,
   };
 

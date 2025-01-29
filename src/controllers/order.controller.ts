@@ -1,6 +1,9 @@
 import { Request, Response } from 'express';
 import asyncHandler from 'express-async-handler';
-import { createOrderBodySchema } from '../validators/order.validator';
+import {
+  createOrderBodySchema,
+  trackOrderBodySchema,
+} from '../validators/order.validator';
 import CustomError from '../lib/utils/error';
 import { VendorModel } from '../models/vendors.models';
 import {
@@ -61,6 +64,23 @@ export const placeOrder = asyncHandler(async (req: Request, res: Response) => {
     200,
     { tracking_id: order.trackingId },
     'Order placed successfully',
+    null
+  );
+});
+
+export const trackOrder = asyncHandler(async (req: Request, res: Response) => {
+  const { tracking_id } = trackOrderBodySchema.parse(req.body);
+
+  const order = await Order.findOne({ trackingId: tracking_id });
+  if (!order) {
+    throw new CustomError('Order not found', 404);
+  }
+
+  sendResponse(
+    res,
+    200,
+    { contact: order.contact, status: order.status },
+    'Tracking Order',
     null
   );
 });
