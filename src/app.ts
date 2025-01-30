@@ -8,7 +8,7 @@ import cookieParser from 'cookie-parser';
 import morgan from 'morgan';
 import compression from 'compression';
 
-import { authRoutes, chatRoutes, orderRoutes } from './routes';
+import { authRoutes, chatRoutes, dashboardRoutes, orderRoutes } from './routes';
 import errorController from './controllers/error.controller';
 import CustomError from './lib/utils/error';
 import { authMiddleWare } from './middlewares/auth.middleware';
@@ -76,7 +76,8 @@ app.get('/socket.io', (req, res) => {
 app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1/order', orderRoutes);
 app.use('/api/v1/chat', chatRoutes);
-app.get('/protected', authMiddleWare, (req, res) => {
+app.use('/api/v1/dashboard', dashboardRoutes);
+app.get('/api/v1/protected', authMiddleWare, (req, res) => {
   res.status(200).json({ message: "You're logged in!" });
 });
 

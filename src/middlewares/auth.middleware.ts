@@ -6,9 +6,10 @@ import {
   hashPassword,
   verifyJWT,
 } from '../utils/helpers';
-import { VendorModel } from '../models/vendors.models';
+import { VendorModel, VendorType } from '../models/vendors.models';
 import jwt from 'jsonwebtoken';
 import asyncHandler from 'express-async-handler';
+import { AdminModel, AdminType } from '../models/admin.model';
 export const authMiddleWare = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
     const { accessToken, refreshToken } = req.cookies;
@@ -28,7 +29,15 @@ export const authMiddleWare = asyncHandler(
         }
 
         const decoded = jwt.verify(refreshToken, process.env.JWT_SECRET);
-        const user = await VendorModel.findById(decoded.userId);
+        const type = decoded.role;
+        let user = {} as AdminType | VendorType;
+
+        if (type === 'admin') {
+          const user = await AdminModel.findById(decoded.userId);
+        }
+        if (type === 'vendor' || type === 'driver') {
+          user = await VendorModel.findById(decoded.userId);
+        }
 
         if (!user) {
           throw new CustomError('unauthorized', 401);

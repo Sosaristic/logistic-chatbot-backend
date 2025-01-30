@@ -17,6 +17,8 @@ Here are the intents and required parameters:
    - Required: orderID, newAddress
 4. General inquiry:
    - No parameters required.
+5. Product details:
+  - Required: productID
 
 If the user provides all required details, respond with the relevant answer but continue assisting them with follow-up questions.
 
@@ -138,6 +140,11 @@ export const handleChats = (io: Server): void => {
             const trackingNumber = userSession.parameters.trackingNumber;
             orderHandler(trackingNumber, io);
 
+            break;
+
+          case 'Check order status':
+            const orderId = userSession.parameters.orderID;
+            orderHandler(orderId, io);
             break;
 
           default:

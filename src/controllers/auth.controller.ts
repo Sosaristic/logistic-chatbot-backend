@@ -19,6 +19,7 @@ import {
 } from '../utils/helpers';
 import sendEmail from '../services/send_email';
 import { sendResponse } from '../utils/sendResponse';
+import { AdminModel } from '../models/admin.model';
 
 export const login = asyncHandler(async (req: Request, res: Response) => {
   const { email, password } = loginBodySchema.parse(req.body);
@@ -94,7 +95,6 @@ export const register = asyncHandler(async (req: Request, res: Response) => {
   const data = signUpBodySchema.parse(req.body);
 
   const { email, password, type } = data;
-  console.log(data, 'data');
 
   const existingUser = await VendorModel.findOne({ email });
 
@@ -247,3 +247,94 @@ export const logout = asyncHandler(async (req: Request, res: Response) => {
   res.clearCookie('refreshToken');
   sendResponse(res, 200, null, 'User logged out successfully', null);
 });
+
+export const getSession = asyncHandler(async (req: Request, res: Response) => {
+  const { accessToken } = req.cookies;
+  const decoded = verifyJWT(accessToken);
+  const user = await VendorModel.findById(decoded.userId);
+  if (!user) {
+    throw new CustomError('User not found', 401);
+  }
+  const userData = {
+    vendor_name: user.vendor_name,
+  };
+  sendResponse(res, 200, userData, 'User logged in successfully', null);
+});
+
+export const getAdminSession = asyncHandler(
+  async (req: Request, res: Response) => {
+    const { accessToken } = req.cookies;
+    console.log(accessToken, 'access token');
+
+    const decoded = verifyJWT(accessToken);
+    const user = await AdminModel.findById(decoded.userId);
+    if (!user) {
+      throw new CustomError('User not found', 401);
+    }
+    const userData = {
+      email: user.email,
+    };
+    sendResponse(res, 200, userData, 'User logged in successfully', null);
+  }
+);
+
+export const adminLogin = asyncHandler(async (req: Request, res: Response) => {
+  const { email, password } = req.body;
+
+  const user = await AdminModel.findOne({ email });
+
+  if (!user) {
+    throw new CustomError('invalid credentials', 401);
+  }
+
+  const isPasswordMatched = comparePassword(password, user.password);
+  if (!isPasswordMatched) {
+    throw new CustomError('invalid credentials', 401);
+  }
+
+  const accessToken = createJWT(
+    { userId: user._id.toString(), role: 'admin' },
+    { expiresIn: '2m' }
+  );
+  const refreshToken = createJWT(
+    { userId: user._id.toString(), role: 'admin' },
+    { expiresIn: '7d' }
+  );
+
+  res.cookie('accessToken', accessToken, {
+    httpOnly: true,
+    sameSite: 'none',
+    secure: process.env.NODE_ENV === 'production',
+    maxAge: 5 * 60 * 1000,
+  });
+  res.cookie('refreshToken', refreshToken, {
+    httpOnly: true,
+    sameSite: 'none',
+    secure: process.env.NODE_ENV === 'production',
+    maxAge: 7 * 24 * 60 * 60 * 1000,
+  });
+
+  const hashedToken = await hashPassword(refreshToken);
+
+  user.refresh_token = hashedToken;
+
+  sendResponse(res, 200, null, 'User logged in successfully', null);
+});
+
+export const seedDatabase = asyncHandler(
+  async (req: Request, res: Response) => {
+    const adminData = {
+      email: 'sundayomena2@gmail.com',
+      password: 'Password123@', // Hash this in a real scenario
+      email_verified: true,
+      refresh_token: null,
+      type: 'admin',
+    };
+
+    const hashedPass = await hashPassword(adminData.password);
+    adminData.password = hashedPass;
+    await AdminModel.create(adminData);
+
+    sendResponse(res, 200, null, 'Database seeded successfully', null);
+  }
+);
