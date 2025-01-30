@@ -69,7 +69,7 @@ export const placeOrder = asyncHandler(async (req: Request, res: Response) => {
 });
 
 export const trackOrder = asyncHandler(async (req: Request, res: Response) => {
-  const { tracking_id } = trackOrderBodySchema.parse(req.body);
+  const { tracking_id } = trackOrderBodySchema.parse(req.params);
 
   const order = await Order.findOne({ trackingId: tracking_id });
   if (!order) {

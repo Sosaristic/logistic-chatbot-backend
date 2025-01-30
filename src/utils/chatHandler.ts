@@ -1,8 +1,12 @@
-import { Server } from 'socket.io';
+import { Server, Socket } from 'socket.io';
 import OpenAI from 'openai';
+import { ChatCompletionMessageParam } from 'openai/resources'; // ✅ Correct import
+import { orderHandler } from './orderHandler';
+
+// ✅ Define System Prompt for AI
 const systemPrompt = `
-You are a logistics chatbot. Your job is to help users with their requests by understanding their intent and collecting required information. 
-If the user doesn't provide all necessary parameters, politely ask them for the missing ones.
+You are a logistics chatbot. Your job is to help users with their requests by understanding their intent and collecting required information.
+Users may ask multiple questions in the same session, so always be prepared to continue the conversation.
 
 Here are the intents and required parameters:
 1. Track delivery:
@@ -14,100 +18,157 @@ Here are the intents and required parameters:
 4. General inquiry:
    - No parameters required.
 
-Respond with JSON in this format:
+If the user provides all required details, respond with the relevant answer but continue assisting them with follow-up questions.
+
+Respond in this JSON format:
 {
   "intent": "extracted intent",
   "parameters": {
     "param1": "value1",
     "param2": "value2"
   },
-  "missingParameters": ["paramName1", "paramName2"], // List of missing parameters
-  "followUpMessage": "Message to ask user for missing parameters" // Optional message to continue the conversation
+  "missingParameters": ["paramName1", "paramName2"],
+  "followUpMessage": "Your answer here. You can also ask me anything else!"
 }
 `;
 
-type ChatProps = {
+interface ChatProps {
   name: string;
   time: string;
   message: string;
   sentByAdmin: boolean;
-};
+}
 
-export const handleChats = (io: Server) => {
+interface AIResponse {
+  intent: string;
+  parameters: Record<string, string>;
+  missingParameters: string[];
+  followUpMessage: string;
+}
+
+interface UserSession {
+  messages: ChatCompletionMessageParam[];
+  parameters: Record<string, string>;
+  missingParameters: string[];
+}
+
+export const handleChats = (io: Server): void => {
   const openai = new OpenAI({
-    apiKey: process.env.OPENAI_API_KEY,
+    apiKey: process.env.OPENAI_API_KEY!,
   });
 
-  io.on('connection', (socket) => {
+  const userSessions: Map<string, UserSession> = new Map();
+
+  io.on('connection', (socket: Socket) => {
     console.log(`User connected: ${socket.id}`);
 
-    socket.on('message', async (msg) => {
-      console.log('Received message:', msg);
+    setTimeout(() => {
+      socket.emit(
+        'response',
+        generateChatResponse('Hello! How can I help you?')
+      );
+    }, 2000);
 
-      const completion = await openai.chat.completions.create({
-        model: 'gpt-4o-mini',
-        store: true,
-        messages: [
+    socket.on('message', async (msg: string) => {
+      console.log(`User (${socket.id}) message:`, msg);
+
+      let userSession = userSessions.get(socket.id) ?? {
+        messages: [],
+        parameters: {},
+        missingParameters: [],
+      };
+
+      userSession.messages.push({
+        role: 'user',
+        content: msg,
+      } as ChatCompletionMessageParam);
+
+      try {
+        const messages: ChatCompletionMessageParam[] = [
           { role: 'system', content: systemPrompt },
-          { role: 'user', content: msg },
-        ],
-      });
+          ...userSession.messages,
+        ];
 
-      console.log(completion.choices, 'completion');
-      console.log(completion.choices[0].message.content, 'message');
+        const completion = await openai.chat.completions.create({
+          model: 'gpt-4o-mini',
+          messages,
+        });
 
-      const parsedContent = JSON.parse(completion.choices[0].message.content);
+        if (!completion.choices || completion.choices.length === 0) {
+          throw new Error('No response from OpenAI.');
+        }
 
-      switch (parsedContent.intent) {
-        case 'General inquiry':
-          io.emit('response', {
-            message: {
-              message: parsedContent.followUpMessage,
-              name: 'Andy',
-              sentByAdmin: true,
-              time: new Date().toISOString(),
-            } as ChatProps,
-          });
+        let parsedContent: AIResponse;
+        try {
+          parsedContent = JSON.parse(
+            completion.choices[0]?.message?.content || '{}'
+          ) as AIResponse;
+        } catch (error) {
+          console.error('Error parsing AI response:', error);
+          socket.emit(
+            'response',
+            generateChatResponse('There was an error processing your request.')
+          );
+          return;
+        }
 
-          break;
+        if (parsedContent.missingParameters.length > 0) {
+          userSession.missingParameters = parsedContent.missingParameters;
+        }
 
-        case 'Track delivery':
-          io.emit('response', {
-            message: {
-              message: parsedContent.followUpMessage,
-              name: 'Andy',
-              sentByAdmin: true,
-              time: new Date().toISOString(),
-            } as ChatProps,
-          });
-          break;
+        userSession.parameters = {
+          ...userSession.parameters,
+          ...parsedContent.parameters,
+        };
 
-        case 'Check order status':
-          io.emit('response', {
-            message: {
-              message: parsedContent.followUpMessage,
-              name: 'Andy',
-              sentByAdmin: true,
-              time: new Date().toISOString(),
-            } as ChatProps,
-          });
-          break;
+        userSession.missingParameters = userSession.missingParameters.filter(
+          (param) => !(param in userSession.parameters)
+        );
 
-        default:
-          io.emit('response', {
-            message: {
-              message: parsedContent.followUpMessage,
-              name: 'Andy',
-              sentByAdmin: true,
-              time: new Date().toISOString(),
-            } as ChatProps,
-          });
-          break;
+        userSessions.set(socket.id, userSession);
+
+        let responseMessage = parsedContent.followUpMessage;
+
+        if (userSession.missingParameters.length === 0) {
+          responseMessage += ' Feel free to ask me anything else!';
+        }
+
+        switch (parsedContent.intent) {
+          case 'Track delivery':
+            const trackingNumber = userSession.parameters.trackingNumber;
+            orderHandler(trackingNumber, io);
+
+            break;
+
+          default:
+            socket.emit('response', generateChatResponse(responseMessage));
+            break;
+        }
+      } catch (error) {
+        console.error('Error processing OpenAI request:', error);
+        socket.emit(
+          'response',
+          generateChatResponse(
+            'An error occurred while processing your request.'
+          )
+        );
       }
     });
 
     socket.on('disconnect', () => {
       console.log(`User disconnected: ${socket.id}`);
+      userSessions.delete(socket.id);
     });
   });
 };
+
+export const generateChatResponse = (
+  message: string
+): { message: ChatProps } => ({
+  message: {
+    message,
+    name: 'Andy', // Chatbot name
+    sentByAdmin: true,
+    time: new Date().toISOString(),
+  },
+});
