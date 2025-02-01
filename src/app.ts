@@ -19,7 +19,6 @@ dotenv.config();
 const app = express();
 const server = createServer(app);
 
-// ✅ Fix: Apply CORS directly to Socket.IO
 export const io = new Server(server, {
   cors: {
     origin: [
@@ -67,7 +66,6 @@ app.get('/', (req, res) => {
   res.status(200).json({ message: 'Hello World' });
 });
 
-// ✅ Test route for Socket.IO
 app.get('/socket.io', (req, res) => {
   res.status(200).json({ message: 'Socket.io is running' });
 });

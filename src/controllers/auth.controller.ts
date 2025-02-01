@@ -294,7 +294,7 @@ export const adminLogin = asyncHandler(async (req: Request, res: Response) => {
 
   const accessToken = createJWT(
     { userId: user._id.toString(), role: 'admin' },
-    { expiresIn: '2m' }
+    { expiresIn: '15m' }
   );
   const refreshToken = createJWT(
     { userId: user._id.toString(), role: 'admin' },
