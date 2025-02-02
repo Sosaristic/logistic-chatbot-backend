@@ -1,5 +1,5 @@
 import mongoose, { Document } from 'mongoose';
-import { VendorType } from './vendors.models';
+import { UserType } from './users.models';
 
 interface ContactType extends Document {
   firstName: string;
@@ -26,7 +26,7 @@ interface OrderType extends Document {
   contact: ContactType;
   products: ProductType[];
   totalAmount: number;
-  vendor: VendorType;
+  vendor: UserType;
   date: string;
   status: 'pending' | 'assigned' | 'in transit' | 'delivered';
   trackingId: string;

@@ -5,12 +5,8 @@ import {
   trackOrderBodySchema,
 } from '../validators/order.validator';
 import CustomError from '../lib/utils/error';
-import { VendorModel } from '../models/vendors.models';
-import {
-  formatCurrency,
-  generateTrackingId,
-  hashAPIKey,
-} from '../utils/helpers';
+import { UserModel } from '../models/users.models';
+import { formatCurrency, generateTrackingId } from '../utils/helpers';
 import { sendResponse } from '../utils/sendResponse';
 import { Order } from '../models/order.model';
 import sendEmail from '../services/send_email';
@@ -28,7 +24,7 @@ export const placeOrder = asyncHandler(async (req: Request, res: Response) => {
     throw new CustomError('Unauthorized', 401);
   }
 
-  const vendor = await VendorModel.findOne({ api_key: apiKey });
+  const vendor = await UserModel.findOne({ api_key: apiKey });
 
   if (!vendor) {
     throw new CustomError('Unauthorized', 401);

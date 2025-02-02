@@ -6,7 +6,7 @@ import {
   hashPassword,
   verifyJWT,
 } from '../utils/helpers';
-import { VendorModel, VendorType } from '../models/vendors.models';
+import { UserModel, UserType } from '../models/users.models';
 import jwt from 'jsonwebtoken';
 import asyncHandler from 'express-async-handler';
 import { AdminModel, AdminType } from '../models/admin.model';
@@ -30,13 +30,13 @@ export const authMiddleWare = asyncHandler(
 
         const decoded = jwt.verify(refreshToken, process.env.JWT_SECRET);
         const type = decoded.role;
-        let user = {} as AdminType | VendorType;
+        let user = {} as AdminType | UserType;
 
         if (type === 'admin') {
           const user = await AdminModel.findById(decoded.userId);
         }
         if (type === 'vendor' || type === 'driver') {
-          user = await VendorModel.findById(decoded.userId);
+          user = await UserModel.findById(decoded.userId);
         }
 
         if (!user) {

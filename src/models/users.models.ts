@@ -1,6 +1,6 @@
 import mongoose, { Document, Schema } from 'mongoose';
 
-export interface VendorType extends Document {
+export interface UserType extends Document {
   email: string;
   vendor_name: string;
   first_name: string;
@@ -12,7 +12,7 @@ export interface VendorType extends Document {
   refresh_token: string;
 }
 
-const vendorSchema: Schema = new mongoose.Schema(
+const userSchema: Schema = new mongoose.Schema(
   {
     vendor_name: {
       type: String,
@@ -52,4 +52,4 @@ const vendorSchema: Schema = new mongoose.Schema(
   }
 );
 
-export const VendorModel = mongoose.model<VendorType>('Vendor', vendorSchema);
+export const UserModel = mongoose.model<UserType>('User', userSchema);

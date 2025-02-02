@@ -4,8 +4,6 @@ import { sendResponse } from '../utils/sendResponse';
 import { createChatBodySchema } from '../validators/chat.validator';
 
 import OpenAI from 'openai';
-import { v4 as uuidv4 } from 'uuid';
-import { io } from '../app';
 
 // Initialize OpenAI client
 
