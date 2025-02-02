@@ -23,7 +23,7 @@ const verifyEmail = expressAsyncHandler(async (req: Request, res: Response) => {
 
   const user = await UserModel.findByIdAndUpdate(decoded.userId, {
     email_verified: true,
-    api_key: hashedApi,
+    ...(decoded.role === 'vendor' && { api_key: hashedApi }),
   });
 
   sendEmail({
