@@ -1,19 +1,27 @@
 import expressAsyncHandler from 'express-async-handler';
 import { Request, Response } from 'express';
-import { UserModel } from '../../models/users.models';
+import { UserModel, UserType } from '../../models/users.models';
 import CustomError from '../../lib/utils/error';
 import { createJWT, verifyJWT } from '../../utils/helpers';
 import { sendResponse } from '../../utils/sendResponse';
+import { AdminModel, AdminType } from '../../models/admin.model';
 
 const logout = expressAsyncHandler(async (req: Request, res: Response) => {
   const { accessToken } = req.cookies;
-  console.log(accessToken, 'access token');
 
   const decoded = verifyJWT(accessToken);
-  const user = await UserModel.findById(decoded.userId);
+
+  let user = {} as UserType | AdminType;
+  if (decoded.role === 'admin') {
+    user = await AdminModel.findById(decoded.userId);
+  }
+  if (decoded.role === 'vendor' || decoded.role === 'driver') {
+    user = await UserModel.findById(decoded.userId);
+  }
   if (!user) {
     throw new CustomError('User not found', 401);
   }
+
   user.refresh_token = '';
 
   await user.save();

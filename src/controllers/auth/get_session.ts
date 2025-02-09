@@ -9,7 +9,9 @@ import { AdminModel, AdminType } from '../../models/admin.model';
 const getSession = expressAsyncHandler(async (req: Request, res: Response) => {
   const { accessToken } = req.cookies;
 
-  console.log(accessToken, 'access token');
+  if (!accessToken) {
+    throw new CustomError('unauthorized', 401);
+  }
 
   const decoded = verifyJWT(accessToken);
 
