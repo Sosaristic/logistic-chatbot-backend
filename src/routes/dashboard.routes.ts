@@ -5,7 +5,7 @@ import { adminMiddleWare } from '../middlewares/admin.middleware';
 
 const router = Router();
 
-// router.use(authMiddleWare, adminMiddleWare);
+router.use(authMiddleWare, adminMiddleWare);
 router.get('/overview', getDashboardOverview);
 
 export default router;
