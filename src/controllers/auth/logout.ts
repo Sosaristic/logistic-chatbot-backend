@@ -15,8 +15,18 @@ const logout = expressAsyncHandler(async (req: Request, res: Response) => {
   user.refresh_token = '';
 
   await user.save();
-  res.clearCookie('accessToken');
-  res.clearCookie('refreshToken');
+  res.cookie('accessToken', '', {
+    httpOnly: true,
+    sameSite: 'none',
+    secure: process.env.NODE_ENV === 'production',
+    maxAge: -1,
+  });
+  res.cookie('refreshToken', '', {
+    httpOnly: true,
+    sameSite: 'none',
+    secure: process.env.NODE_ENV === 'production',
+    maxAge: -1,
+  });
   sendResponse(res, 200, null, 'User logged out successfully', null);
 });
 
