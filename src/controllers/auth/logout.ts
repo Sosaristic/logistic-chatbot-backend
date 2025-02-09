@@ -7,6 +7,8 @@ import { sendResponse } from '../../utils/sendResponse';
 
 const logout = expressAsyncHandler(async (req: Request, res: Response) => {
   const { accessToken } = req.cookies;
+  console.log(accessToken, 'access token');
+
   const decoded = verifyJWT(accessToken);
   const user = await UserModel.findById(decoded.userId);
   if (!user) {
