@@ -9,6 +9,8 @@ import { AdminModel, AdminType } from '../../models/admin.model';
 const getSession = expressAsyncHandler(async (req: Request, res: Response) => {
   const { accessToken } = req.cookies;
 
+  console.log(accessToken, 'access token');
+
   const decoded = verifyJWT(accessToken);
 
   let user = {} as AdminType | UserType;

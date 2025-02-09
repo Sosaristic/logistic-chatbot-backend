@@ -34,14 +34,12 @@ const adminLogin = expressAsyncHandler(async (req: Request, res: Response) => {
     sameSite: 'none',
     secure: process.env.NODE_ENV === 'production',
     maxAge: 60 * 60 * 1000,
-    partitioned: true,
   });
   res.cookie('refreshToken', refreshToken, {
     httpOnly: true,
     sameSite: 'none',
     secure: process.env.NODE_ENV === 'production',
     maxAge: 7 * 24 * 60 * 60 * 1000,
-    partitioned: true,
   });
 
   const hashedToken = await hashPassword(refreshToken);
