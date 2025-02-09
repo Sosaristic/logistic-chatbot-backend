@@ -10,7 +10,6 @@ const getSession = expressAsyncHandler(async (req: Request, res: Response) => {
   const { accessToken } = req.cookies;
 
   const decoded = verifyJWT(accessToken);
-  console.log(decoded, 'decoded');
 
   let user = {} as AdminType | UserType;
   if (decoded.role === 'admin') {

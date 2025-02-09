@@ -6,14 +6,49 @@ import { sendResponse } from '../../utils/sendResponse';
 
 const getDashboardOverview = asyncHandler(
   async (req: Request, res: Response) => {
-    const [totalUsers, totalOrders, users, orders] = await Promise.all([
-      UserModel.countDocuments(), // Get total users count
-      Order.countDocuments(), // Get total orders count
-      UserModel.find().select('name email createdAt'), // Get all users (optimized)
-      Order.find().select('userId totalAmount status createdAt'), // Get all orders (optimized)
+    const overViewData = await Promise.all([
+      UserModel.aggregate([
+        {
+          $facet: {
+            totalVendors: [
+              { $match: { type: 'vendor', email_verified: true } },
+              { $count: 'count' },
+            ],
+            totalDrivers: [
+              { $match: { type: 'driver', email_verified: true } },
+              { $count: 'count' },
+            ],
+          },
+        },
+      ]),
+      Order.aggregate([
+        {
+          $facet: {
+            deliveries: [{ $count: 'count' }],
+          },
+        },
+      ]),
     ]);
 
-    sendResponse(res, 200, null, 'Dashboard', null);
+    const parsedUser = overViewData[0][0];
+    const parsedOrder = overViewData[1][0];
+    console.log(parsedOrder);
+    console.log(parsedUser);
+
+    const data = {
+      totalVendors:
+        parsedUser.totalVendors.length > 0
+          ? parsedUser.totalVendors[0].count
+          : 0,
+      totalDrivers:
+        parsedUser.totalDrivers.length > 0
+          ? parsedUser.totalDrivers[0].count
+          : 0,
+      totalDeliveries:
+        parsedOrder.deliveries.length > 0 ? parsedOrder.deliveries[0].count : 0,
+    };
+
+    sendResponse(res, 200, data, 'Dashboard', null);
   }
 );
 
