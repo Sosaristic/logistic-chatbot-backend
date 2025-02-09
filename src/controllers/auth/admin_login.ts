@@ -35,7 +35,6 @@ const adminLogin = expressAsyncHandler(async (req: Request, res: Response) => {
     secure: process.env.NODE_ENV === 'production',
     maxAge: 60 * 60 * 1000,
     partitioned: true,
-    path: '/',
   });
   res.cookie('refreshToken', refreshToken, {
     httpOnly: true,
@@ -43,7 +42,6 @@ const adminLogin = expressAsyncHandler(async (req: Request, res: Response) => {
     secure: process.env.NODE_ENV === 'production',
     maxAge: 7 * 24 * 60 * 60 * 1000,
     partitioned: true,
-    path: '/',
   });
 
   const hashedToken = await hashPassword(refreshToken);
