@@ -10,6 +10,8 @@ export interface UserType extends Document {
   api_key: string;
   email_verified: boolean;
   refresh_token: string;
+  is_driver_available: boolean;
+  state: String;
 }
 
 const userSchema: Schema = new mongoose.Schema(
@@ -44,6 +46,13 @@ const userSchema: Schema = new mongoose.Schema(
       type: Boolean,
     },
     refresh_token: {
+      type: String,
+    },
+    is_driver_available: {
+      type: Boolean,
+      default: false,
+    },
+    state: {
       type: String,
     },
   },

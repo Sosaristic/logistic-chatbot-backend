@@ -32,13 +32,14 @@ const register = expressAsyncHandler(async (req: Request, res: Response) => {
   }
 
   if (type === 'driver') {
-    const { first_name, last_name } = data;
+    const { first_name, last_name, state } = data;
     user = await UserModel.create({
       email,
       type,
       password: hashedPass,
       first_name,
       last_name,
+      state,
     });
   }
 

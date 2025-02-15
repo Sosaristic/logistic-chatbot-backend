@@ -1,4 +1,4 @@
-import mongoose, { Document } from 'mongoose';
+import mongoose, { Document, Mongoose } from 'mongoose';
 import { UserType } from './users.models';
 
 interface ContactType extends Document {
@@ -27,6 +27,7 @@ interface OrderType extends Document {
   products: ProductType[];
   totalAmount: number;
   vendor: UserType;
+  driver: UserType;
   date: string;
   status: 'pending' | 'assigned' | 'in transit' | 'delivered';
   trackingId: string;
@@ -95,7 +96,7 @@ const orderSchema = new mongoose.Schema<OrderType>({
   },
   vendor: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Vendor',
+    ref: 'User',
     required: true,
   },
   products: {
@@ -117,6 +118,10 @@ const orderSchema = new mongoose.Schema<OrderType>({
   },
   trackingId: {
     type: String,
+  },
+  driver: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Users',
   },
 });
 
