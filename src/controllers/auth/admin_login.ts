@@ -7,6 +7,7 @@ import { createJWT } from '../../utils/helpers';
 import { sendResponse } from '../../utils/sendResponse';
 import { UserModel } from '../../models/users.models';
 import { Order } from '../../models/order.model';
+import { getDashboardData } from '../../utils/getDashboardData';
 
 const adminLogin = expressAsyncHandler(async (req: Request, res: Response) => {
   const { email, password } = req.body;
@@ -49,44 +50,8 @@ const adminLogin = expressAsyncHandler(async (req: Request, res: Response) => {
   const hashedToken = await hashPassword(refreshToken);
 
   user.refresh_token = hashedToken;
-
-  const overViewData = await Promise.all([
-    UserModel.aggregate([
-      {
-        $facet: {
-          totalVendors: [
-            { $match: { type: 'vendor', email_verified: true } },
-            { $count: 'count' },
-          ],
-          totalDrivers: [
-            { $match: { type: 'driver', email_verified: true } },
-            { $count: 'count' },
-          ],
-        },
-      },
-    ]),
-    Order.aggregate([
-      {
-        $facet: {
-          deliveries: [{ $count: 'count' }],
-          shipments: [{ $match: { status: 'delivered'} }],
-        },
-      },
-    ]),
-  ]);
-
-  const parsedUser = overViewData[0][0];
-  const parsedOrder = overViewData[1][0];
-
-  const data = {
-    totalVendors:
-      parsedUser.totalVendors.length > 0 ? parsedUser.totalVendors[0].count : 0,
-    totalDrivers:
-      parsedUser.totalDrivers.length > 0 ? parsedUser.totalDrivers[0].count : 0,
-    totalDeliveries:
-      parsedOrder.deliveries.length > 0 ? parsedOrder.deliveries[0].count : 0,
-    totalShipments: parsedOrder.shipments,
-  };
+  const data = await getDashboardData();
+  console.log(data);
 
   sendResponse(res, 200, data, 'User logged in successfully', null);
 });

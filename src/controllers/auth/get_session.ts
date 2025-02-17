@@ -5,6 +5,7 @@ import CustomError from '../../lib/utils/error';
 import { verifyJWT } from '../../utils/helpers';
 import { sendResponse } from '../../utils/sendResponse';
 import { AdminModel, AdminType } from '../../models/admin.model';
+import { getDashboardData } from '../../utils/getDashboardData';
 
 const getSession = expressAsyncHandler(async (req: Request, res: Response) => {
   const { accessToken } = req.cookies;
@@ -27,10 +28,8 @@ const getSession = expressAsyncHandler(async (req: Request, res: Response) => {
     throw new CustomError('User not found', 401);
   }
   if (user.type === 'admin') {
-    const userData = {
-      email: user.email,
-    };
-    sendResponse(res, 200, userData, 'User logged in successfully', null);
+    const data = await getDashboardData();
+    sendResponse(res, 200, data, 'User logged in successfully', null);
   }
   if (user.type === 'vendor' || user.type === 'driver') {
     const userData = {

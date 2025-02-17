@@ -31,6 +31,8 @@ const adminSchema: Schema = new mongoose.Schema(
     },
     type: {
       type: String,
+      required: true,
+      enum: ['admin', 'super-admin'],
       default: 'admin',
     },
   },
